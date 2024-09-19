@@ -1,0 +1,107 @@
+package co.edu.uniquindio.HotelParcial_1.controladores;
+
+
+import co.edu.uniquindio.HotelParcial_1.model.Cliente;
+import co.edu.uniquindio.HotelParcial_1.model.Habitacion;
+import co.edu.uniquindio.HotelParcial_1.model.Hotel;
+import co.edu.uniquindio.HotelParcial_1.model.Reserva;
+import co.edu.uniquindio.HotelParcial_1.model.service.ServicioHabitacion;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.stage.Stage;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import java.time.LocalDate;
+
+@AllArgsConstructor
+@Getter
+
+/** Clase que representa el Controlador Principal de la AppHotel
+ */
+
+public class ControladorPrincipal extends ServicioHabitacion {
+
+    @Getter
+    private final Hotel hotel;
+    public static ControladorPrincipal INSTANCIA;
+
+    private ControladorPrincipal(){
+        hotel = new Hotel();
+    }
+
+    public static ControladorPrincipal getInstance(){
+        if (INSTANCIA == null){
+            INSTANCIA = new ControladorPrincipal();
+        }
+        return INSTANCIA;
+    }
+
+
+    public Cliente buscarCliente(String cedula) {
+        return hotel.buscarCliente(cedula);
+    }
+
+
+    public Habitacion buscarHabitacion(int numeroHabitacion){
+        return hotel.buscarHabitacion(numeroHabitacion);
+    }
+
+
+    public Reserva crearReserva(String nombre, String cedula,
+                                LocalDate fechaIngreso, LocalDate fechaSalida
+            , int numeroHabitacion, int cantidadPersonas) throws Exception{
+        return hotel.crearReserva(nombre, cedula, fechaIngreso, fechaSalida,
+                numeroHabitacion, cantidadPersonas);
+    }
+
+    public Reserva obtenerReserva(int codigoHabitacion){
+        return hotel.obtenerReserva(codigoHabitacion);
+    }
+
+
+    public void liberarHabitacion(int numero){
+        hotel.liberarHabitacion(numero);
+    }
+
+    public void mostrarAlerta(String mensaje, Alert.AlertType tipo){
+        Alert alert = new Alert(tipo);
+        alert.setTitle("Alerta Hotel");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    public FXMLLoader navegar(String nombreVista, String titulo){
+        try {
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource(nombreVista));
+            Parent root = loader.load();
+
+            //Creamos la escena
+            Scene scene = new Scene(root);
+
+            //Creamos un nuevo escenario
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.setTitle(titulo);
+
+            //Mostramos la nueva ventana
+            stage.show();
+
+            return loader;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void cerrarVentana(Node node){
+        Stage stage = (Stage) node.getScene().getWindow();
+        stage.close();
+    }
+}
+
